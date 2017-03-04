@@ -112,7 +112,7 @@ class I2Cssh
     end
 
     def enable_broadcast
-        @sys_events.keystroke "I", :using => :command_down
+        @sys_events.keystroke "i", :using => [:command_down, :option_down]
         sleep 0.5
         @sys_events.keystroke "\r"
     end
