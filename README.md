@@ -88,6 +88,8 @@ Optional parameters can be used globally or per cluster and include:
         - LC_BAR: bar
 
     iterm2: true                # Use iTerm2.app instead of iTerm.app (only available globally)
+    extra: <full string>        # String to append to options (example: -i ~/my.pem)
+
 
 Note: rows and columns can't be used together.
 

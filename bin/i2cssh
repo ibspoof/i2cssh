@@ -6,7 +6,7 @@ require 'yaml'
 
 @config_file = File.expand_path "~/.i2csshrc"
 
-@i2_options, ssh_options, @servers, @clusters, @ssh_environment, opts_from_cmdline = [], [], [], {}, [], {}
+@i2_options, @ssh_options, @servers, @clusters, @ssh_environment, opts_from_cmdline = [], [], [], {}, [], {}
 
 def get_hosts(c)
     c.each do |clus|
@@ -64,6 +64,10 @@ def set_options(config_hash, login_override=nil)
         @ssh_environment.last.merge!(config_hash["environment"].inject({}){|m, v| m.merge(v)})
     else
         @ssh_environment << {}
+    end
+
+    if config_hash["extra"]
+      @ssh_options << config_hash["extra"]
     end
 
 end
@@ -141,7 +145,7 @@ optparse = OptionParser.new do |opts|
     # SSH options
     opts.on '-A', '--forward-agent',
         'Enable SSH agent forwarding' do
-        ssh_options << '-A'
+        @ssh_options << '-A'
     end
 
     opts.on '-l', '--login LOGIN',
@@ -223,7 +227,7 @@ optparse = OptionParser.new do |opts|
     opts.on '-X', '--extra EXTRA_PARAM', String,
         'Additional ssh parameters (e.g. -Xi=myidentity.pem)' do |x|
 
-         ssh_options << "-" + x.split("=").join(" ")
+         @ssh_options << "-" + x.split("=").join(" ")
     end
     opts.on '-g', '--gateway HOST', String,
         'Multihop SSH connection gateway string (e.g. username@gateway) - usually used with -A' do |g|
@@ -300,4 +304,4 @@ if @servers.empty?
 end
 
 
-I2Cssh.new @servers, ssh_options, @i2_options, @ssh_environment
+I2Cssh.new @servers, @ssh_options, @i2_options, @ssh_environment
